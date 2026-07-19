@@ -13,7 +13,14 @@ WARNING:
     and ensure you have proper backups before running this script.
 */
 
--- create   databases
-CREATE DATABASE bronze;
-CREATE DATABASE silver;
-CREATE DATABASE gold;
+-- DROP table and 
+DROP DATABASE IF EXISTS dw_bronze;
+DROP DATABASE IF EXISTS dw_silver;
+DROP DATABASE IF EXISTS dw_gold;
+
+-- create  databases
+CREATE DATABASE dw_bronze;
+CREATE DATABASE dw_silver;
+CREATE DATABASE dw_gold;
+
+
