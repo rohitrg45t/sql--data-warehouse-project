@@ -1,9 +1,25 @@
+/*
+===============================================================================
+Quality Checks
+===============================================================================
+Script Purpose:
+    This script performs various quality checks for data consistency, accuracy, 
+    and standardization across the 'silver' layer. It includes checks for:
+    - Null or duplicate primary keys.
+    - Unwanted spaces in string fields.
+    - Data standardization and consistency.
+    - Invalid date ranges and orders.
+    - Data consistency between related fields.
 
+Usage Notes:
+    - Run these checks after data loading Silver Layer.
+    - Investigate and resolve any discrepancies found during the checks.
+===============================================================================
+*/
 
-
-
-
-
+-- ====================================================================
+-- Checking 'silver.crm_cust_info'
+-- ====================================================================
 
 
 -- TABLE 1
@@ -76,8 +92,10 @@ FROM dw_silver.crm_cust_info
 SELECT DISTINCT cst_marital_status
 FROM dw_silver.crm_cust_info;
 
--- TABLE 2 - crm_prd_info
 
+-- ===================================================================
+-- TABLE 2 - crm_prd_info
+-- ===================================================================
 -- check for NULLs or Duplicates in primary key
 -- expected : no result
 SELECT prd_id,
@@ -122,8 +140,10 @@ WHERE prd_key IN ('AC-HE-HL-U509-R','AC-HE-HL-U509');
 SELECT * FROM dw_bronze.crm_prd_info;
 
 
-
+-- ==================================================================
 -- TABLE 3 -- crm_sales_details
+-- =================================================================
+
 SELECT * FROM dw_bronze.crm_sales_details
 WHERE sls_ord_num != TRIM(sls_ord_num);
 
@@ -184,7 +204,11 @@ OR sls_sales <= 0 OR sls_quantity <= 0 OR sls_price <= 0
 OR sls_sales IS NULL OR sls_quantity IS NULL OR sls_price IS NULL
 ORDER BY sls_sales,sls_quantity,sls_price;
 
+
+-- ===========================================================
 -- table 4 -- erp_cust_az12
+-- ===========================================================
+
 SELECT 
 cid,
 bdate,
@@ -236,8 +260,10 @@ CASE WHEN UPPER(TRIM(gen)) IN ('M','MALE') THEN 'Male'
 END AS gen
 FROM dw_bronze.erp_cust_az12;
 
-
+-- =========================================================
 -- Table 5 -- erp_loc_a101
+-- ==========================================================
+
 SELECT * FROM erp_loc_a101;
 
 SELECT cid ,
@@ -268,8 +294,9 @@ END AS cntry
 FROM dw_bronze.erp_loc_a101;
 
 
+-- =========================================================
 -- table 6 -- erp_px_cat_g1v2
-
+-- =========================================================
 
 SELECT *  FROM dw_bronze.erp_px_cat_g1v2;
 
