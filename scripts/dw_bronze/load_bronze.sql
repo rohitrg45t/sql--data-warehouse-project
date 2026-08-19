@@ -1,3 +1,23 @@
+/*
+===============================================================================
+Stored Procedure: Load Bronze Layer (Source -> Bronze)
+===============================================================================
+Script Purpose:
+    This stored procedure loads data into the 'bronze' schema/database from external CSV files. 
+    It performs the following actions:
+    - Truncates the bronze tables before loading data.
+    - Uses the `LOAD DATA INFILE` command to load data from csv Files to bronze tables.
+
+Parameters:
+    None. 
+	  This stored procedure does not accept any parameters or return any values.
+
+NOte: 
+   Mysql restricts LOAD DATA INFILE inside stored procedures
+===============================================================================
+*/
+
+
 USE dw_bronze;
 -- Main Header
 
@@ -13,6 +33,10 @@ SELECT '>> Truncating Table:dw_bronze.crm_cust_info' AS Message;
 
 -- Record start time
 SET @start_time = NOW();
+
+
+-- Table 1 Load CRM customer info
+
 -- First, empty the table so we don't duplicate rows from previous partial runs
 TRUNCATE TABLE dw_bronze.crm_cust_info;
 
@@ -36,7 +60,10 @@ SELECT CONCAT('>> Load Duration:',TIMESTAMPDIFF(SECOND,@start_time,@end_time),'s
 SELECT * FROM dw_bronze.crm_cust_info;
 SELECT COUNT(*) FROM dw_bronze.crm_cust_info;
 
--- table 2 --
+
+
+-- table 2 --  Load CRM Product Info
+
 SET @start_time = NOW();
 SELECT '>> Truncating Table:dw_bronze.crm_prd_info' AS Message;
 TRUNCATE TABLE dw_bronze.crm_prd_info;
@@ -51,7 +78,11 @@ IGNORE 1 LINES
 SET prd_cost = IF(@v_prd_cost = '' OR @v_prd_cost IS NULL, NULL, @v_prd_cost);
 SET @end_time = NOW();
 SELECT CONCAT('>> Load Duration:', TIMESTAMPDIFF(SECOND,@start_time,@end_time),'seconds') AS Message;
--- table3 --
+
+
+
+-- table3 --Load CRM Sales Details
+
 SET @start_time = NOW();
 SELECT '>> Truncating table:dw_bronze.crm_sales_details' AS Message;
 TRUNCATE TABLE dw_bronze.crm_sales_details;
@@ -71,7 +102,9 @@ SELECT * FROM dw_bronze.crm_sales_details;
 SELECT COUNT(*) FROM dw_bronze.crm_sales_details;
 SET @end_time = NOW();
 SELECT CONCAT('>> Loading Duration:',TIMESTAMPDIFF(SECOND,@start_time,@end_time),'seconds') AS Message;
--- table 4 --
+
+
+-- table 4 --Load ERP Customer az12
 SET @start_time = NOW();
 SELECT '============================================' AS Message;
 SELECT 'Loading ERP Tables' AS Message;
@@ -92,7 +125,9 @@ SET GEN = IF(@v_GEN = '' OR @v_GEN IS NULL,NULL,@v_GEN);
 SELECT * from dw_bronze.erp_cust_az12;
 SET @end_time = NOW();
 SELECT CONCAT('>> Load Duration:',TIMESTAMPDIFF(SECOND,@start_time,@end_time),'seconds') AS Message;
--- table 5 --
+
+
+-- table 5 --Load ERP Loc_a101
 SET @start_time = NOW();
 SELECT '>> Truncating Table:dw_bronze.erp_loc_a101' AS Message;
 TRUNCATE TABLE dw_bronze.erp_loc_a101;
@@ -108,7 +143,8 @@ SELECT * from dw_bronze.erp_loc_a101;
 SET @end_time = NOW();
 SELECT CONCAT('>> Load Duration:',TIMESTAMPDIFF(SECOND,@start_time,@end_time),'seconds') AS Message;
 
--- table 6 --
+
+-- table 6 --Load ERP px_cat_g1v2
 SET @staart_time = NOW();
 SELECT '>> Truncating Table:dw_bronze.erp_px_cat_g1v2'  AS Message;
 TRUNCATE TABLE dw_bronze.erp_px_cat_g1v2;
@@ -120,6 +156,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
+
 -- SELECT * from dw_bronze.erp_px_cat_g1v2;
 SET @end_time = NOW();
 SELECT CONCAT('>> Load Duration:',TIMESTAMPDIFF(SECOND,@start_time,@end_time),'seconds') AS Message;
