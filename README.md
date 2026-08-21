@@ -101,5 +101,16 @@ sql data-warehouse-project/
 ├── .gitignore                          # Files and directories to be ignored by Git
 └── requirements.txt                    # Dependencies and requirements for the project
 ```
----
+
+## How to run locally
+* 1. Clone the Repository:
+     git clone [https://github.com/](https://github.com/)<your-username>/sql-data-warehouse-project.git
+* 2. Execute Scripts Sequentially in MYSQL Workbench:
+     * step 1(Bronze):Run "scripts/dw_bronze/ddl_bronze.sql" followed by "scripts/dw_bronze/load_bronze.sql" to ingest raw data files.
+     * step 2(silver):Run "scripts/dw_silver/ddl_silver.sql" to create Silver tables, then execute
+       "scripts/dw_silver/load_silver.sql" to compile the stored procedure.
+     * step 3(Run ETL): Call the silver transformation pipeline:
+       "CALL dw_silver.load_silver();"
+     * step 4(Gold): Execute the scripts under "scripts/dw_gold/" to construct your analytics-ready Star Schema views.
+ ---
 
