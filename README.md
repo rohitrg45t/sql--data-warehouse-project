@@ -68,6 +68,18 @@ For more details, refer to docs/requirements.md.
 * *Dimensional Modeling:*
   * Created surrogate primary keys using window functions (ROW_NUMBER() OVER()) and integrated business keys to ensure clean relational integrity between dimension entities and transactional facts.
 ---
+---
+## Key Technical Adaptations: MySQL vs. T-SQL (SQL Server)
+While the original reference architecture was demonstrated in Microsoft SQL Server (T-SQL), this implementation was adapted for *MySQL 8.0*. Translating the project required solving distinct dialect-specific engineering constraints:
+
+| Implementation Area | SQL Server (T-SQL Reference) | MySQL 8.0 (This Implementation) | Engineering Adaptation |
+| :--- | :--- | :--- | :--- |
+| *Bronze Bulk Ingestion* | BULK INSERT inside stored procedures | LOAD DATA INFILE | MySQL restricts LOAD DATA INFILE inside routines; decoupled ingestion into a dedicated batch execution script (load_bronze.sql). |
+| *Error Handling* | BEGIN TRY ... BEGIN CATCH blocks | DECLARE ... HANDLER FOR SQLEXCEPTION | Implemented ANSI-standard structured exception handling using GET DIAGNOSTICS to capture error codes and messages. |
+| *Delimiters & Scripting* | Standard GO batch terminators | Custom DELIMITER // and DELIMITER ; | Configured multi-statement execution delimiters for stored procedure compilation outside DROP PROCEDURE routines. |
+| *Schema Isolation* | Single database with multiple schemas (silver.table_name) | Multiple databases / schemas (dw_silver, dw_gold) | Emulated physical database schema isolation via explicit schema qualification across cross-layer joins. |
+| *Null Fallback Logic* | ISNULL() / COALESCE() | COALESCE() | Enforced ANSI-standard multi-variable fallback chains to map CRM and ERP customer master attributes seamlessly
+---
 ## Tech Stack
 * *Database Engine:* MySQL 8.0
 * *Management Tool:* MySQL Workbench
