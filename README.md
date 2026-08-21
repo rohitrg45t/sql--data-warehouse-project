@@ -67,10 +67,17 @@ For more details, refer to docs/requirements.md.
   * The Silver layer stored procedure implements custom exception tracking using DECLARE EXIT HANDLER FOR SQLEXCEPTION combined with GET DIAGNOSTICS to capture MySQL error numbers and detailed execution messages gracefully.
 * *Dimensional Modeling:*
   * Created surrogate primary keys using window functions (ROW_NUMBER() OVER()) and integrated business keys to ensure clean relational integrity between dimension entities and transactional facts.
+---
+## Tech Stack
+* *Database Engine:* MySQL 8.0
+* *Management Tool:* MySQL Workbench
+* *Version Control:* Git & GitHub
+* *Core Concepts:* ETL Pipelines, Star Schema, Data Hygiene, Exception Handling, Medallion Architecture
 
 ---
 ## REPOSITORY STRUCTURE
-data-warehouse-project/
+'''text
+sql data-warehouse-project/
 │
 ├── datasets/                           # Raw datasets used for the project (ERP and CRM data)
 │
